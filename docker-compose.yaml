@@ -1,0 +1,38 @@
+services:
+  frontend:
+    build:
+      context: ./frontend/bibfrontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend/bibfrontend:/app:cached
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./backend/bibbackend
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./backend/bibbackend:/app
+    env_file: ./backend/bibbackend/.env
+    depends_on:
+      - db
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_DB: bibleotheque
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+
+volumes:
+  db_data:
